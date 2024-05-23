@@ -1,22 +1,36 @@
 
 <?php 
 
-    $valid_email = "123@gmail.com";
+    var_dump($_POST);
 
-    $cur_email = $_GET["mail"];
+    $error;
+    $result;
 
-    if ($cur_email == $valid_email) {
+    include __DIR__ . "/functions.php";
 
-        $email_verifier = true;
+    if (isset($_POST["email"])) {
+
+        $user_email = $_POST["email"];
+
+        if (empty($user_email)) {
+
+            $error = "Inserisci email!";
+
+        }
+        else if (!emailValidator($user_email)) {
+
+            $error = "email deve contenere @ o . ";
+
+        }
+        else {
+            $result = "Login completato!";
+
+            header("Location: ./template/thankyou.php");
+            die();
+        }
 
     }
-    else {
-        $email_verifier = false;
-    };
-
-    var_dump($cur_email);
-    var_dump($email_verifier);
-
+    
 ?>
 
 <!DOCTYPE html>
@@ -31,14 +45,28 @@
 
 <body>
     
-    <form action="index.php" method="GET">
+    <form action="index.php" method="POST">
 
-        <label for="mail">Inserire la propria mail</label>
-        <input type="email" name="mail" id="mail">
+        <label for="email">Inserire la propria mail</label>
+        <input type="email" name="email" id="email">
 
         <input type="submit" value="INVIO">
 
     </form>
+
+    <?php if (isset($error)) { ?>
+
+        <div class="alert alert-danger">
+            <?php echo $error ?>
+        </div>
+
+    <?php } else if(isset($result)) { ?>
+
+        <div class="alert alert-success">
+            <?php echo $result ?>
+        </div>
+
+    <?php } ?>
 
 </body>
 
